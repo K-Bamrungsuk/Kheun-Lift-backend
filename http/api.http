@@ -1,0 +1,132 @@
+@BASE_URL = http://localhost:3000
+@user_Token = {{userLogin.response.body.token}}
+
+
+### User Register
+POST {{BASE_URL}}/auth/register
+Content-Type: application/json
+
+{
+    "username": "Jacob",
+    "email": "jacob@gmail.com",
+    "password": "123456",
+    "confirmPassword": "123456"
+}
+
+
+### User Login
+# @name userLogin
+POST {{BASE_URL}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "jacob@gmail.com",
+    "password": "123456"
+}
+
+//------------------------------------------------------------------
+
+### Get User / ME
+GET {{BASE_URL}}/users/me
+Content-Type: application/json
+Authorization: Bearer {{user_Token}}
+
+
+### Edit User / ME
+PATCH {{BASE_URL}}/users/me
+Content-Type: application/json
+Authorization: Bearer {{user_Token}}
+
+{    
+  "username": "Jacob",
+  "height": 182,
+  "bodyWeight": 80,
+  "gender": "male",
+  "dateOfBirth": "2005-01-10"
+}
+
+
+### DELETE User / ME
+DELETE {{BASE_URL}}/users/me
+Content-Type: application/json
+Authorization: Bearer {{user_Token}}
+
+//------------------------------------------------------------------
+
+
+### GET All Exercise
+GET {{BASE_URL}}/exercises
+
+
+### GET Exercise By Id
+GET {{BASE_URL}}/exercises/2
+
+
+
+
+//------------------------------------------------------------------
+
+### POST Lift Records
+POST {{BASE_URL}}/lifts
+Authorization: Bearer {{user_Token}}
+Content-Type: application/json
+
+{
+   "exerciseId": 3,
+  "weight": 120,
+  "reps": 4,
+  "performedAt": "2026-08-13T10:00:00.000Z",
+  "caption": "Yeahhhh",
+  "videoUrl": "https://www.youtube.com/watch?v=example"
+}
+
+
+### GET All Lift Records / ME
+GET {{BASE_URL}}/lifts/me
+Authorization: Bearer {{user_Token}}
+
+
+### GET Lift Records by Id
+GET {{BASE_URL}}/lifts/4
+Authorization: Bearer {{user_Token}}
+
+
+### GET All Lift Record by User Id
+GET {{BASE_URL}}/lifts/users/4
+Authorization: Bearer {{user_Token}}
+
+
+### PATCH Lift Record / ME
+PATCH {{BASE_URL}}/lifts/2
+Authorization: Bearer {{user_Token}}
+Content-Type: application/json
+
+{
+  "caption": "Finally hit 500kg! V.1"
+}
+
+
+### Delete
+DELETE {{BASE_URL}}/lifts/1
+Authorization: Bearer {{user_Token}}
+
+
+// ---------------------------------------------------------
+### Get leaderboards by Exercise Id
+GET {{BASE_URL}}/leaderboards/exercises/3
+Authorization: Bearer {{user_Token}}
+
+
+### Get leaderboards by Exercise Id and Weight Class Id
+GET {{BASE_URL}}/leaderboards/exercises/3/weight-classes/4
+Authorization: Bearer {{user_Token}}
+
+
+### Get leaderboards by Exercise Id and Weight Class Id (male)
+GET {{BASE_URL}}/leaderboards/exercises/3/weight-classes/4?gender=male
+Authorization: Bearer {{user_Token}}
+
+
+### Get leaderboards by Exercise Id and Weight Class Id (female)
+GET {{BASE_URL}}/leaderboards/exercises/3/weight-classes/15?gender=female
+Authorization: Bearer {{user_Token}}

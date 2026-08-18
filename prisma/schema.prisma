@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum Gender {
+  male
+  female
+}
+
+enum LiftRecordStatus {
+  pending
+  verified
+  rejected
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  username     String    @unique
+  email        String    @unique
+  password     String
+  profileImage String?
+  gender       Gender?
+  dateOfBirth  DateTime?
+  height       Float?
+  bodyWeight   Float?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  liftRecords LiftRecord[]
+}
+
+model Exercise {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+
+  liftRecords LiftRecord[]
+}
+
+model WeightClass {
+  id        Int    @id @default(autoincrement())
+  gender    Gender
+  name      String
+  minWeight Float
+  maxWeight Float?
+
+  liftRecords LiftRecord[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([gender])
+}
+
+model LiftRecord {
+  id            Int @id @default(autoincrement())
+  userId        Int
+  exerciseId    Int
+  weightClassId Int
+
+  user        User        @relation(fields: [userId], references: [id])
+  exercise    Exercise    @relation(fields: [exerciseId], references: [id])
+  weightClass WeightClass @relation(fields: [weightClassId], references: [id])
+
+  weight      Float
+  reps        Int
+  performedAt DateTime
+
+  caption  String?
+  videoUrl String?
+  status   LiftRecordStatus @default(pending)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([exerciseId, weightClassId])
+  @@index([status])
+}
