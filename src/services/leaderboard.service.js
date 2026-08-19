@@ -51,7 +51,7 @@ export async function getleaderboardsService({
     };
   }
 
-  const leadeboards = await prisma.liftRecord.findMany({
+  const leaderboards = await prisma.liftRecord.findMany({
     where,
     include: {
       user: {
@@ -78,7 +78,7 @@ export async function getleaderboardsService({
       },
     ],
   });
-  return leadeboards.map((record, index) => ({
+  return leaderboards.map((record, index) => ({
     rank: index + 1,
     ...record,
   }));

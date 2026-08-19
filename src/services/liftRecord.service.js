@@ -18,7 +18,6 @@ export async function createLiftRecordsService(
   exerciseId,
   weight,
   reps,
-  performedAt,
   caption,
   videoUrl,
 ) {
@@ -42,7 +41,7 @@ export async function createLiftRecordsService(
     },
   });
   if (!exercise) {
-    throw createError(401, "Exercise Not Found!");
+    throw createError(404, "Exercise Not Found!");
   }
 
   //Find WeightClass and then create Lift Record
@@ -50,7 +49,7 @@ export async function createLiftRecordsService(
     where: {
       gender: user.gender,
       minWeight: {
-        lt: user.bodyWeight,
+        lte: user.bodyWeight,
       },
       OR: [
         {
@@ -65,6 +64,14 @@ export async function createLiftRecordsService(
     },
   });
 
+  if (user.bodyWeight === null) {
+    throw createError(400, "Body weight is required!");
+  }
+
+  if (!user.gender) {
+    throw createError(400, "Gender is required!");
+  }
+
   if (!weightClass) {
     throw createError(404, "Weight Class Not Found!");
   }
@@ -73,7 +80,6 @@ export async function createLiftRecordsService(
     data: {
       weight,
       reps,
-      performedAt,
       caption,
       videoUrl,
       status: "pending",
@@ -130,10 +136,22 @@ export async function getMyLiftRecordsService(userId) {
           username: true,
         },
       },
-      exercise: true,
+      exercise: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      weightClass: {
+        select: {
+          id: true,
+          name: true,
+          gender: true,
+        },
+      },
     },
     orderBy: {
-      performedAt: "desc",
+      createdAt: "desc",
     },
   });
 }
@@ -150,13 +168,22 @@ export async function getLiftRecordsByIdService(id) {
           username: true,
         },
       },
-      exercise: true,
+      exercise: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      weightClass: {
+        select: {
+          id: true,
+          name: true,
+          gender: true,
+        },
+      },
     },
   });
-  console.log("liftRecord", liftRecord);
-  if (!liftRecord) {
-    throw createError(404, "Lift Record not found");
-  }
+
   return liftRecord;
 }
 
@@ -172,10 +199,22 @@ export async function getUserAllLiftRecordsService(userId) {
           username: true,
         },
       },
-      exercise: true,
+      exercise: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      weightClass: {
+        select: {
+          id: true,
+          name: true,
+          gender: true,
+        },
+      },
     },
     orderBy: {
-      performedAt: "desc",
+      createdAt: "desc",
     },
   });
 

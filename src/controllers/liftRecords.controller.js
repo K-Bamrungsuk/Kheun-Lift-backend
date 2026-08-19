@@ -16,7 +16,7 @@ export async function createLiftRecord(req, res, next) {
   try {
     const data = createLiftRecordSchema.parse(req.body);
 
-    const { exerciseId, weight, reps, performedAt, caption, videoUrl } = data;
+    const { exerciseId, weight, reps, caption, videoUrl } = data;
 
     const userId = req.user.id;
 
@@ -25,7 +25,6 @@ export async function createLiftRecord(req, res, next) {
       exerciseId,
       weight,
       reps,
-      performedAt,
       caption,
       videoUrl,
     );

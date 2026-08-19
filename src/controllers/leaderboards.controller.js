@@ -33,8 +33,8 @@ export async function getLeaderboardsByExerciseIdAndWeightClassId(
 ) {
   try {
     const { exerciseId, weightClassId } = leaderboardExerciseWeightClassSchema.parse(req.params);
-    console.log('exerciseId', exerciseId)
-    console.log('weightClassId', weightClassId)
+    // console.log('exerciseId', exerciseId)
+    // console.log('weightClassId', weightClassId)
 
     const { gender } = leaderboardGenderSchema.parse(req.query);
 

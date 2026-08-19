@@ -42,7 +42,7 @@ Authorization: Bearer {{user_Token}}
   "height": 182,
   "bodyWeight": 80,
   "gender": "male",
-  "dateOfBirth": "2005-01-10"
+  "dateOfBirth": "2002-10-05"
 }
 
 
@@ -72,10 +72,9 @@ Authorization: Bearer {{user_Token}}
 Content-Type: application/json
 
 {
-   "exerciseId": 3,
+  "exerciseId": 3,
   "weight": 120,
   "reps": 4,
-  "performedAt": "2026-08-13T10:00:00.000Z",
   "caption": "Yeahhhh",
   "videoUrl": "https://www.youtube.com/watch?v=example"
 }
@@ -87,7 +86,7 @@ Authorization: Bearer {{user_Token}}
 
 
 ### GET Lift Records by Id
-GET {{BASE_URL}}/lifts/4
+GET {{BASE_URL}}/lifts/1
 Authorization: Bearer {{user_Token}}
 
 
@@ -97,33 +96,33 @@ Authorization: Bearer {{user_Token}}
 
 
 ### PATCH Lift Record / ME
-PATCH {{BASE_URL}}/lifts/2
+PATCH {{BASE_URL}}/lifts/3
 Authorization: Bearer {{user_Token}}
 Content-Type: application/json
 
 {
-  "caption": "Finally hit 500kg! V.1"
+  "caption": "Finally hit 80kg! By Anwa"
 }
 
 
 ### Delete
-DELETE {{BASE_URL}}/lifts/1
+DELETE {{BASE_URL}}/lifts/4
 Authorization: Bearer {{user_Token}}
 
 
 // ---------------------------------------------------------
 ### Get leaderboards by Exercise Id
-GET {{BASE_URL}}/leaderboards/exercises/3
+GET {{BASE_URL}}/leaderboards/exercises/1
 Authorization: Bearer {{user_Token}}
 
 
 ### Get leaderboards by Exercise Id and Weight Class Id
-GET {{BASE_URL}}/leaderboards/exercises/3/weight-classes/4
+GET {{BASE_URL}}/leaderboards/exercises/1/weight-classes/4
 Authorization: Bearer {{user_Token}}
 
 
 ### Get leaderboards by Exercise Id and Weight Class Id (male)
-GET {{BASE_URL}}/leaderboards/exercises/3/weight-classes/4?gender=male
+GET {{BASE_URL}}/leaderboards/exercises/1/weight-classes/4?gender=male
 Authorization: Bearer {{user_Token}}
 
 

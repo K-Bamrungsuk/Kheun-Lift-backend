@@ -72,9 +72,8 @@ model LiftRecord {
   exercise    Exercise    @relation(fields: [exerciseId], references: [id])
   weightClass WeightClass @relation(fields: [weightClassId], references: [id])
 
-  weight      Float
-  reps        Int
-  performedAt DateTime
+  weight Float
+  reps   Int
 
   caption  String?
   videoUrl String?
