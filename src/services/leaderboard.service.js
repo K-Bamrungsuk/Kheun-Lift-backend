@@ -94,7 +94,7 @@ export async function getleaderboardsService({
 
   return bestRecords.map((record, index) => ({
     ...record, 
-    leaderboard: index + 1
+    rank: index + 1
   }));
 }
 
