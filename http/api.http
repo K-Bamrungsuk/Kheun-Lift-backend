@@ -20,7 +20,7 @@ POST {{BASE_URL}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "jacob@gmail.com",
+    "email": "mac@gmail.com",
     "password": "123456"
 }
 
@@ -38,11 +38,11 @@ Content-Type: application/json
 Authorization: Bearer {{user_Token}}
 
 {    
-  "username": "Jacob",
-  "height": 182,
-  "bodyWeight": 80,
+  "username": "Mac",
+  "height": 175,
+  "bodyWeight": 73,
   "gender": "male",
-  "dateOfBirth": "2002-10-05"
+  "dateOfBirth": "2003-03-11"
 }
 
 
@@ -73,8 +73,8 @@ Content-Type: application/json
 
 {
   "exerciseId": 3,
-  "weight": 120,
-  "reps": 4,
+  "weight": 100,
+  "reps": 2,
   "caption": "Yeahhhh",
   "videoUrl": "https://www.youtube.com/watch?v=example"
 }
@@ -129,3 +129,7 @@ Authorization: Bearer {{user_Token}}
 ### Get leaderboards by Exercise Id and Weight Class Id (female)
 GET {{BASE_URL}}/leaderboards/exercises/3/weight-classes/15?gender=female
 Authorization: Bearer {{user_Token}}
+
+
+### Get Leaderboard randomly
+GET {{BASE_URL}}/leaderboards/random

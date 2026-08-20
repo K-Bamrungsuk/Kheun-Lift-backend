@@ -33,6 +33,9 @@ export async function createLiftRecordsService(
   if (user.bodyWeight === null) {
     throw createError(400, "Body weight is required!");
   }
+  if (!user.gender) {
+    throw createError(400, "Gender is required!");
+  }
 
   //Find Exercise
   const exercise = await prisma.exercise.findUnique({
@@ -48,9 +51,11 @@ export async function createLiftRecordsService(
   const weightClass = await prisma.weightClass.findFirst({
     where: {
       gender: user.gender,
+
       minWeight: {
-        lte: user.bodyWeight,
+        lt: user.bodyWeight,
       },
+
       OR: [
         {
           maxWeight: {
@@ -63,14 +68,6 @@ export async function createLiftRecordsService(
       ],
     },
   });
-
-  if (user.bodyWeight === null) {
-    throw createError(400, "Body weight is required!");
-  }
-
-  if (!user.gender) {
-    throw createError(400, "Gender is required!");
-  }
 
   if (!weightClass) {
     throw createError(404, "Weight Class Not Found!");

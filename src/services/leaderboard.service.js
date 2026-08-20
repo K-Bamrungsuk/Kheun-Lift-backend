@@ -1,6 +1,7 @@
 import { prisma } from "../lib/prisma.js";
 import createError from "http-errors";
 
+//Get leaderboard
 export async function getleaderboardsService({
   exerciseId,
   weightClassId,
@@ -34,10 +35,10 @@ export async function getleaderboardsService({
     });
 
     if (!weightClass) {
-        throw createError(404, "Weight Class not found")
+      throw createError(404, "Weight Class not found");
     }
 
-    if (gender && weightClass.gender !==gender) {
+    if (gender && weightClass.gender !== gender) {
       throw createError(404, "Weight class does not match gender");
     }
 
@@ -78,8 +79,58 @@ export async function getleaderboardsService({
       },
     ],
   });
-  return leaderboards.map((record, index) => ({
-    rank: index + 1,
-    ...record,
+
+  const userId = new Set();
+
+  const bestRecords = leaderboards.filter((record) => {
+    if (userId.has(record.userId)) {
+      return false;
+    }
+
+    userId.add(record.userId);
+
+    return true;
+  });
+
+  return bestRecords.map((record, index) => ({
+    ...record, 
+    leaderboard: index + 1
   }));
+}
+
+//Get leaderboard randomly
+export async function getRandomLeaderboardService() {
+  const availableLeaderboards = await prisma.liftRecord.groupBy({
+    by: ["exerciseId", "weightClassId"],
+
+    where: {
+      status: "verified",
+    },
+  });
+
+  // ไม่มี Leaderboard ที่มีข้อมูลเลย
+  if (availableLeaderboards.length === 0) {
+    return null;
+  }
+
+  const selected =
+    availableLeaderboards[
+      Math.floor(Math.random() * availableLeaderboards.length)
+    ];
+
+  const leaderboards = await getleaderboardsService({
+    exerciseId: selected.exerciseId,
+    weightClassId: selected.weightClassId,
+  });
+
+  // ป้องกันกรณีข้อมูลถูกลบระหว่าง query
+  if (!leaderboards.length) {
+    return null;
+  }
+
+  return {
+    exerciseId: selected.exerciseId,
+    weightClassId: selected.weightClassId,
+    leaderboards,
+  };
 }

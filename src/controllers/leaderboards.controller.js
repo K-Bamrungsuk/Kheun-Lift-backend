@@ -1,4 +1,4 @@
-import { getleaderboardsService } from "../services/leaderboard.service.js";
+import { getleaderboardsService, getRandomLeaderboardService } from "../services/leaderboard.service.js";
 import {
   leaderboardExerciseSchema,
   leaderboardExerciseWeightClassSchema,
@@ -47,5 +47,21 @@ export async function getLeaderboardsByExerciseIdAndWeightClassId(
     res.json(leadeboards);
   } catch (err) {
     next(err);
+  }
+}
+
+//Get Leaderboard randomly by exercise and weight-class id
+export async function getRandomLeaderboard(req, res, next) {
+  try {
+    const result = await getRandomLeaderboardService();
+
+    res.status(200).json({
+      message: result
+        ? "Get random leaderboard successfully"
+        : "No leaderboard available",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
   }
 }
