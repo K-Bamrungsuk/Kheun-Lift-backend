@@ -57,3 +57,7 @@ export const leaderboardExerciseWeightClassSchema = z.object({
 export const leaderboardGenderSchema = z.object({
   gender: z.enum(["male", "female"]).optional(),
 });
+
+export const weightClassGenderSchema = z.object({
+  gender: z.enum(["male", "female"]),
+});
