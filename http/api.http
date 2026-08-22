@@ -95,7 +95,7 @@ GET {{BASE_URL}}/lifts/users/4
 Authorization: Bearer {{user_Token}}
 
 
-### PATCH Lift Record / ME
+### PATCH Lift Record / ME by id
 PATCH {{BASE_URL}}/lifts/3
 Authorization: Bearer {{user_Token}}
 Content-Type: application/json

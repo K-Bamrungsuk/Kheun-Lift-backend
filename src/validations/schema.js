@@ -20,6 +20,8 @@ export const editUserSchema = z.object({
     .min(1, "Username must be at least 1 characters.")
     .max(20, "Username must be at most 20 characters.")
     .optional(),
+  height: z.coerce.number().positive().max(999).optional(),
+  bodyWeight: z.coerce.number().positive().max(999).optional(),
 
   password: z
     .string()
@@ -42,7 +44,7 @@ export const createLiftRecordSchema = z.object({
 });
 
 export const updatedLiftRecordSchema = z.object({
-  caption: z.string().optional(),
+  caption: z.string(),
 });
 
 export const leaderboardExerciseSchema = z.object({

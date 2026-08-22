@@ -18,12 +18,12 @@ export async function registerUser(username, email, password) {
 export async function loginUser(email, password) {
   const user = await findUserByEmail(email);
   if (!user) {
-    throw createError(401, "invalid credentials");
+    throw createError(401, "Invalid email");
   }
 
   const isMatch = await argon2.verify(user.password, password);
   if (!isMatch) {
-    throw createError(401, "invalid credentials");
+    throw createError(401, "Invalid credentials");
   }
 
   const token = await createToken({

@@ -89,13 +89,12 @@ export async function getUserAllLiftRecords(req, res, next) {
 export async function updateLiftRecordsById(req, res, next) {
   try {
     const id = Number(req.params.id);
-
-    updatedLiftRecordSchema.parse(req.body);
+    const { caption } = updatedLiftRecordSchema.parse(req.body);
 
     const liftRecord = await updateLiftRecordsService(
-      id,
-      req.user.id,
-      req.body.caption,
+      id, 
+      req.user.id, 
+      caption,
     );
 
     res.status(200).json({
