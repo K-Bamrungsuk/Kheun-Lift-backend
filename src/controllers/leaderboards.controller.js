@@ -1,18 +1,10 @@
 import { getleaderboardsService, getRandomLeaderboardService } from "../services/leaderboard.service.js";
-import {
-  leaderboardExerciseSchema,
-  leaderboardExerciseWeightClassSchema,
-  leaderboardGenderSchema,
-} from "../validations/schema.js";
 
 // Get Leaderboard by exercise id
 export async function getLeaderboardsByExerciseId(req, res, next) {
   try {
-    const { exerciseId } = leaderboardExerciseSchema.parse({
-      exerciseId: req.params.exerciseId,
-    });
-
-    const { gender } = leaderboardGenderSchema.parse(req.query);
+    const { exerciseId } = req.valid.params;
+    const { gender } = req.valid.query;
 
     const leadeboards = await getleaderboardsService({
       exerciseId,
@@ -32,11 +24,11 @@ export async function getLeaderboardsByExerciseIdAndWeightClassId(
   next,
 ) {
   try {
-    const { exerciseId, weightClassId } = leaderboardExerciseWeightClassSchema.parse(req.params);
+    const { exerciseId, weightClassId } = req.valid.params;
     // console.log('exerciseId', exerciseId)
     // console.log('weightClassId', weightClassId)
 
-    const { gender } = leaderboardGenderSchema.parse(req.query);
+    const { gender } = req.valid.query;
 
     const leadeboards = await getleaderboardsService({
       exerciseId,

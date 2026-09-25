@@ -14,6 +14,10 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Password is required"),
 });
 
+export const idParams = z.object({
+  id: z.coerce.number().int().positive(),
+});
+
 export const editUserSchema = z.object({
   username: z
     .string()

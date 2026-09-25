@@ -3,7 +3,6 @@ import {
   editUserService,
   findUserWeightClass,
 } from "../services/user.service.js";
-import { editUserSchema } from "../validations/schema.js";
 
 export async function getMe(req, res, next) {
   try {
@@ -38,7 +37,7 @@ export async function getMe(req, res, next) {
 
 export async function editMe(req, res, next) {
   try {
-    const data = editUserSchema.parse(req.body);
+    const data = req.valid.body;
 
     const updatedUser = await editUserService(req.user.id, data);
 

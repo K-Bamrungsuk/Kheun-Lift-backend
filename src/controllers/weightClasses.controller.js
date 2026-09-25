@@ -1,9 +1,8 @@
 import { getWeightClassesService } from "../services/weightClasses.service.js";
-import { weightClassGenderSchema } from "../validations/schema.js";
 
 export async function getWeightClasses(req, res, next) {
   try {
-    const { gender } = weightClassGenderSchema.parse(req.query);
+    const { gender } = req.valid.query;
 
     const weightClasses = await getWeightClassesService(gender);
 

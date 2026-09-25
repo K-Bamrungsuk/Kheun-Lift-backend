@@ -15,7 +15,7 @@ export async function getAllExercises(req, res, next) {
 
 export async function getExercisesById(req, res, next) {
   try {
-    const { id } = req.params
+    const { id } = req.valid.params
 
     const exercise = await getExerciseByIdService(id)
 

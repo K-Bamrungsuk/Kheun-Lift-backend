@@ -6,17 +6,11 @@ import {
   getUserAllLiftRecordsService,
   updateLiftRecordsService,
 } from "../services/liftRecord.service.js";
-import {
-  createLiftRecordSchema,
-  updatedLiftRecordSchema,
-} from "../validations/schema.js";
 
 // Create Lift Records
 export async function createLiftRecord(req, res, next) {
   try {
-    const data = createLiftRecordSchema.parse(req.body);
-
-    const { exerciseId, weight, reps, caption, videoUrl } = data;
+    const { exerciseId, weight, reps, caption, videoUrl } = req.valid.body;
 
     const userId = req.user.id;
 
@@ -56,7 +50,7 @@ export async function getMyLiftRecords(req, res, next) {
 //Get Lift Record By Lift Record Id
 export async function getLiftRecordsById(req, res, next) {
   try {
-    const id = Number(req.params.id);
+    const { id } = req.valid.params;
 
     const liftRecord = await getLiftRecordsByIdService(id);
 
@@ -72,7 +66,7 @@ export async function getLiftRecordsById(req, res, next) {
 //Get All Lift Record By User Id
 export async function getUserAllLiftRecords(req, res, next) {
   try {
-    const userId = Number(req.params.id);
+    const { id: userId } = req.valid.params;
 
     const liftRecords = await getUserAllLiftRecordsService(userId);
 
@@ -88,8 +82,8 @@ export async function getUserAllLiftRecords(req, res, next) {
 // Edit Lift Record by Id
 export async function updateLiftRecordsById(req, res, next) {
   try {
-    const id = Number(req.params.id);
-    const { caption } = updatedLiftRecordSchema.parse(req.body);
+    const { id } = req.valid.params;
+    const { caption } = req.valid.body;
 
     const liftRecord = await updateLiftRecordsService(
       id, 
@@ -109,7 +103,7 @@ export async function updateLiftRecordsById(req, res, next) {
 // Delete Lift Record By Id
 export async function deleteLiftRecord(req, res, next) {
   try {
-    const id = Number(req.params.id);
+    const { id } = req.valid.params;
     const user = req.user.id;
 
     await deleteLiftRecordService(id, user);

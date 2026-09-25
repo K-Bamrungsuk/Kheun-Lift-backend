@@ -1,10 +1,7 @@
-import { loginSchema, registerSchema } from "../validations/schema.js";
 import { loginUser, registerUser } from "../services/auth.service.js";
 
 export async function register(req, res, next) {
-  registerSchema.parse(req.body);
-
-  const { username, email, password } = req.body;
+  const { username, email, password } = req.valid.body;
 
   const newUser = await registerUser(username, email, password);
 
@@ -26,7 +23,7 @@ export async function register(req, res, next) {
 }
 
 export async function login(req, res, next) {
-  const { email, password } = loginSchema.parse(req.body);
+  const { email, password } = req.valid.body;
 
   const { token, user } = await loginUser(email, password);
 
