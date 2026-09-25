@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
 }
 
 enum Gender {
@@ -59,6 +59,7 @@ model WeightClass {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([gender, name])
   @@index([gender])
 }
 

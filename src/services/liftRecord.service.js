@@ -1,16 +1,5 @@
-import { PrismaClient } from "../../generated/prisma/client.js";
-import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import { prisma } from "../lib/prisma.js";
 import createError from "http-errors";
-
-const adapter = new PrismaMariaDb({
-  host: process.env.DATABASE_HOST,
-  port: Number(process.env.DATABASE_PORT),
-  user: process.env.DATABASE_USER,
-  password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE_NAME,
-});
-
-const prisma = new PrismaClient({ adapter });
 
 // * Create Lift Records
 export async function createLiftRecordsService(

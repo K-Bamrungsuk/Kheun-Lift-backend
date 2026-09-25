@@ -35,8 +35,6 @@ export const editUserSchema = z.object({
   profileImage: z.string().optional(),
   gender: z.enum(["male", "female"]).optional(),
   dateOfBirth: z.coerce.date().optional(),
-  height: z.coerce.number().positive().optional(),
-  bodyWeight: z.coerce.number().positive().optional(),
 });
 
 export const createLiftRecordSchema = z.object({

@@ -1,13 +1,10 @@
 import "dotenv/config";
+import argon2 from "argon2";
 import { PrismaClient } from "../generated/prisma/client.js";
-import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-const adapter = new PrismaMariaDb({
-  host: process.env.DATABASE_HOST,
-  port: Number(process.env.DATABASE_PORT),
-  user: process.env.DATABASE_USER,
-  password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE_NAME,
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL,
 });
 
 const prisma = new PrismaClient({ adapter });
@@ -31,11 +28,10 @@ async function main() {
     ],
     skipDuplicates: true,
   });
-}
 
-// Seed Male Weight Class
-await prisma.weightClass.createMany({
-  data: [
+  // Seed Weight Classes
+  await prisma.weightClass.createMany({
+    data: [
     {
       gender: "male",
       name: "59 kg",
@@ -84,13 +80,12 @@ await prisma.weightClass.createMany({
       minWeight: 120,
       maxWeight: null,
     },
-  ],
-  skipDuplicates: true,
-});
+    ],
+    skipDuplicates: true,
+  });
 
-// Seed Female Weight Class
-await prisma.weightClass.createMany({
-  data: [
+  await prisma.weightClass.createMany({
+    data: [
     {
       gender: "female",
       name: "47 kg",
@@ -139,11 +134,75 @@ await prisma.weightClass.createMany({
       minWeight: 84,
       maxWeight: null,
     },
-  ],
-  skipDuplicates: true,
-});
+    ],
+    skipDuplicates: true,
+  });
 
-console.log("Exercise and WeightClass seeded successfully");
+  // Seed Users
+  const password = await argon2.hash("password123");
+
+  await prisma.user.createMany({
+    data: [
+      {
+        username: "anucha.s",
+        email: "anucha@example.com",
+        password,
+        gender: "male",
+        dateOfBirth: new Date("1998-04-12"),
+        height: 175,
+        bodyWeight: 72,
+      },
+      {
+        username: "krit.power",
+        email: "krit@example.com",
+        password,
+        gender: "male",
+        dateOfBirth: new Date("1995-09-28"),
+        height: 182,
+        bodyWeight: 89,
+      },
+      {
+        username: "thanawat.fit",
+        email: "thanawat@example.com",
+        password,
+        gender: "male",
+        dateOfBirth: new Date("2001-02-17"),
+        height: 168,
+        bodyWeight: 64,
+      },
+      {
+        username: "pimchanok.lifts",
+        email: "pimchanok@example.com",
+        password,
+        gender: "female",
+        dateOfBirth: new Date("1999-07-06"),
+        height: 162,
+        bodyWeight: 55,
+      },
+      {
+        username: "sirinya.strong",
+        email: "sirinya@example.com",
+        password,
+        gender: "female",
+        dateOfBirth: new Date("1997-11-21"),
+        height: 168,
+        bodyWeight: 63,
+      },
+      {
+        username: "nattaya.fit",
+        email: "nattaya@example.com",
+        password,
+        gender: "female",
+        dateOfBirth: new Date("2002-01-30"),
+        height: 158,
+        bodyWeight: 47.5,
+      },
+    ],
+    skipDuplicates: true,
+  });
+
+  console.log("Exercises, weight classes, and users seeded successfully");
+}
 
 main()
   .catch((err) => {
