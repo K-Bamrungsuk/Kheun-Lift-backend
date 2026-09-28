@@ -141,6 +141,16 @@ async function main() {
   // Seed Users
   const password = await argon2.hash("password123");
 
+  await prisma.user.updateMany({
+    where: {
+      OR: [
+        { email: { endsWith: "@example.com" } },
+        { email: { endsWith: "@demo.kheunlift" } },
+      ],
+    },
+    data: { password },
+  });
+
   await prisma.user.createMany({
     data: [
       {
@@ -201,7 +211,97 @@ async function main() {
     skipDuplicates: true,
   });
 
-  console.log("Exercises, weight classes, and users seeded successfully");
+  // Seed presentation-ready rankings for every gender, weight class, and exercise.
+  const [weightClasses, exercises] = await Promise.all([
+    prisma.weightClass.findMany({ orderBy: { id: "asc" } }),
+    prisma.exercise.findMany({ orderBy: { id: "asc" } }),
+  ]);
+  const names = {
+    male: [
+      "Bob Marley", "Freddie Mercury", "David Bowie", "Michael Jackson",
+      "Elvis Presley", "John Lennon", "Paul McCartney", "George Harrison",
+      "Ringo Starr", "Bruno Mars", "Ed Sheeran", "Elton John",
+      "Stevie Wonder", "Prince Nelson", "Mick Jagger", "Bruce Lee",
+      "Jackie Chan", "Tom Hanks", "Keanu Reeves", "Will Smith",
+      "Chris Hemsworth", "Hugh Jackman", "Ryan Gosling", "Dwayne Johnson",
+    ],
+    female: [
+      "Aretha Franklin", "Whitney Houston", "Tina Turner", "Diana Ross",
+      "Dolly Parton", "Celine Dion", "Adele Adkins", "Beyonce Knowles",
+      "Rihanna Fenty", "Taylor Swift", "Lady Gaga", "Katy Perry",
+      "Shakira Mebarak", "Mariah Carey", "Alicia Keys", "Selena Gomez",
+      "Emma Watson", "Sandra Bullock", "Julia Roberts", "Gal Gadot",
+      "Serena Williams", "Simone Biles", "Naomi Osaka", "Ronda Rousey",
+    ],
+  };
+  const nameIndex = { male: 0, female: 0 };
+  const demoUsers = [];
+
+  for (const [classIndex, weightClass] of weightClasses.entries()) {
+    for (let rank = 1; rank <= 3; rank++) {
+      const classSlug = weightClass.name
+        .toLowerCase()
+        .replace("+", "-plus")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/-$/, "");
+      const slug = `${weightClass.gender}-${classSlug}-${rank}`;
+      const username = names[weightClass.gender][nameIndex[weightClass.gender]++];
+      const email = `${username.toLowerCase().replaceAll(" ", "")}@gmail.com`;
+      const bodyWeight = weightClass.maxWeight
+        ? Math.max(weightClass.minWeight + 0.5, weightClass.maxWeight - rank)
+        : weightClass.minWeight + 6 - rank;
+      await prisma.user.updateMany({
+        where: { email: `${slug}@demo.kheunlift` },
+        data: { email },
+      });
+      const user = await prisma.user.upsert({
+        where: { email },
+        update: { username, password, gender: weightClass.gender, bodyWeight },
+        create: {
+          username,
+          email,
+          password,
+          gender: weightClass.gender,
+          bodyWeight,
+          height: weightClass.gender === "male" ? 170 + classIndex : 155 + classIndex,
+          dateOfBirth: new Date(1995 + rank, classIndex % 12, rank * 4),
+        },
+      });
+
+      demoUsers.push({ user, weightClass, bodyWeight, classIndex, rank });
+    }
+  }
+
+  await prisma.liftRecord.deleteMany({
+    where: { userId: { in: demoUsers.map(({ user }) => user.id) } },
+  });
+  await prisma.liftRecord.createMany({
+    data: demoUsers.flatMap(({ user, weightClass, bodyWeight, rank }) =>
+      exercises.map((exercise) => ({
+        userId: user.id,
+        exerciseId: exercise.id,
+        weightClassId: weightClass.id,
+        weight:
+          Math.round(
+            (bodyWeight *
+              ({
+                "Bench Press": weightClass.gender === "male" ? 1.5 : 1.1,
+                Squat: weightClass.gender === "male" ? 1.9 : 1.55,
+                Deadlift: weightClass.gender === "male" ? 2.25 : 1.9,
+              }[exercise.name] -
+                (rank - 1) * 0.08)) /
+              2.5,
+          ) * 2.5,
+        reps: rank,
+        caption: `Demo ${exercise.name} result for the ${weightClass.name} class`,
+        videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        status: "verified",
+        createdAt: new Date(2026, 8, 20 + rank),
+      })),
+    ),
+  });
+
+  console.log("Seeded exercises, weight classes, users, and demo lift records");
 }
 
 main()
