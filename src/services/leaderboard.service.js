@@ -92,6 +92,10 @@ export async function getleaderboardsService({
     return true;
   });
 
+  console.log('record', bestRecords.map((record, index) => ({
+    ...record, 
+    rank: index + 1
+  })))
   return bestRecords.map((record, index) => ({
     ...record, 
     rank: index + 1
