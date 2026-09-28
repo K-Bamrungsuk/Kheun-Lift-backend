@@ -141,74 +141,15 @@ async function main() {
   // Seed Users
   const password = await argon2.hash("password123");
 
-  await prisma.user.updateMany({
+  await prisma.user.deleteMany({
     where: {
-      OR: [
-        { email: { endsWith: "@example.com" } },
-        { email: { endsWith: "@demo.kheunlift" } },
-      ],
+      email: {
+        in: [
+          "anucha@example.com", "krit@example.com", "thanawat@example.com",
+          "pimchanok@example.com", "sirinya@example.com", "nattaya@example.com",
+        ],
+      },
     },
-    data: { password },
-  });
-
-  await prisma.user.createMany({
-    data: [
-      {
-        username: "anucha.s",
-        email: "anucha@example.com",
-        password,
-        gender: "male",
-        dateOfBirth: new Date("1998-04-12"),
-        height: 175,
-        bodyWeight: 72,
-      },
-      {
-        username: "krit.power",
-        email: "krit@example.com",
-        password,
-        gender: "male",
-        dateOfBirth: new Date("1995-09-28"),
-        height: 182,
-        bodyWeight: 89,
-      },
-      {
-        username: "thanawat.fit",
-        email: "thanawat@example.com",
-        password,
-        gender: "male",
-        dateOfBirth: new Date("2001-02-17"),
-        height: 168,
-        bodyWeight: 64,
-      },
-      {
-        username: "pimchanok.lifts",
-        email: "pimchanok@example.com",
-        password,
-        gender: "female",
-        dateOfBirth: new Date("1999-07-06"),
-        height: 162,
-        bodyWeight: 55,
-      },
-      {
-        username: "sirinya.strong",
-        email: "sirinya@example.com",
-        password,
-        gender: "female",
-        dateOfBirth: new Date("1997-11-21"),
-        height: 168,
-        bodyWeight: 63,
-      },
-      {
-        username: "nattaya.fit",
-        email: "nattaya@example.com",
-        password,
-        gender: "female",
-        dateOfBirth: new Date("2002-01-30"),
-        height: 158,
-        bodyWeight: 47.5,
-      },
-    ],
-    skipDuplicates: true,
   });
 
   // Seed presentation-ready rankings for every gender, weight class, and exercise.
@@ -218,20 +159,14 @@ async function main() {
   ]);
   const names = {
     male: [
-      "Bob Marley", "Freddie Mercury", "David Bowie", "Michael Jackson",
-      "Elvis Presley", "John Lennon", "Paul McCartney", "George Harrison",
-      "Ringo Starr", "Bruno Mars", "Ed Sheeran", "Elton John",
-      "Stevie Wonder", "Prince Nelson", "Mick Jagger", "Bruce Lee",
-      "Jackie Chan", "Tom Hanks", "Keanu Reeves", "Will Smith",
-      "Chris Hemsworth", "Hugh Jackman", "Ryan Gosling", "Dwayne Johnson",
+      "Bob", "Mark", "Jacob", "John", "Mike", "Alex", "Ben", "Chris",
+      "Daniel", "Ethan", "Finn", "George", "Harry", "Isaac", "Jack", "Kevin",
+      "Leo", "Max", "Noah", "Owen", "Paul", "Ryan", "Sam", "Tom",
     ],
     female: [
-      "Aretha Franklin", "Whitney Houston", "Tina Turner", "Diana Ross",
-      "Dolly Parton", "Celine Dion", "Adele Adkins", "Beyonce Knowles",
-      "Rihanna Fenty", "Taylor Swift", "Lady Gaga", "Katy Perry",
-      "Shakira Mebarak", "Mariah Carey", "Alicia Keys", "Selena Gomez",
-      "Emma Watson", "Sandra Bullock", "Julia Roberts", "Gal Gadot",
-      "Serena Williams", "Simone Biles", "Naomi Osaka", "Ronda Rousey",
+      "Anna", "Bella", "Chloe", "Daisy", "Emma", "Faith", "Grace", "Hannah",
+      "Ivy", "Jade", "Kate", "Lily", "Mia", "Nora", "Olivia", "Paige",
+      "Quinn", "Rose", "Sarah", "Tina", "Uma", "Vera", "Wendy", "Zoe",
     ],
   };
   const nameIndex = { male: 0, female: 0 };
@@ -245,8 +180,9 @@ async function main() {
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/-$/, "");
       const slug = `${weightClass.gender}-${classSlug}-${rank}`;
-      const username = names[weightClass.gender][nameIndex[weightClass.gender]++];
-      const email = `${username.toLowerCase().replaceAll(" ", "")}@gmail.com`;
+      const index = nameIndex[weightClass.gender]++;
+      const username = names[weightClass.gender][index];
+      const email = `${username.toLowerCase()}@gmail.com`;
       const bodyWeight = weightClass.maxWeight
         ? Math.max(weightClass.minWeight + 0.5, weightClass.maxWeight - rank)
         : weightClass.minWeight + 6 - rank;
